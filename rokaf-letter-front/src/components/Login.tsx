@@ -1,12 +1,13 @@
 import axios from "axios";
 import { FormEventHandler, useState } from "react";
 import { useUserContext } from "../contexts/UserContext";
+import { Navigate } from 'react-router-dom';
 
 function Login() {
     const [emailInput, setEmailInput] = useState("");
     const [passwordInput, setPasswordInput] = useState("");
 
-    const { headers, handleToken, } = useUserContext();
+    const { token, setToken } = useUserContext();
 
     const handleSubmit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -21,11 +22,11 @@ function Login() {
             password: passwordInput
         };
 
-        axios.post("http://localhost:8000/accounts/login/", loginForm, {headers})
+        axios.post("http://localhost:8000/accounts/login/", loginForm)
         .then((res) => {
             switch (res.status) {
                 case 200:
-                    handleToken(res.data.token);
+                    setToken(res.data.token);
                     break;
                 
                 case 401:
@@ -40,6 +41,7 @@ function Login() {
 
     return (
         <>
+            { token && <Navigate to='/' /> }
             <form onSubmit={handleSubmit}>
                 <label htmlFor="email">E-mail: </label>
                 <input type="text" name="email" value={emailInput} onChange={(e) => setEmailInput(e.target.value)}/>

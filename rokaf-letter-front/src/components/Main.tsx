@@ -1,22 +1,26 @@
 import axios from "axios";
 import { useUserContext } from "../contexts/UserContext";
+import { Navigate, Outlet } from "react-router-dom";
+import { useEffect } from "react";
 
 function Main() {
-    const { handleToken, name, email } = useUserContext();
+    const { token, setToken, getHeaders, name, email } = useUserContext();
 
     const handleLogout = () => {
-        axios.post('http://127.0.0.1:8000/accounts/logout')
+        axios.get('http://127.0.0.1:8000/accounts/logout/', {headers: getHeaders(token)})
         .then((res) => {
             if(res.status === 204) {
-                handleToken(null);
+                setToken(null);
             }
         })
     }
 
     return (
-        <>
-            {`${name}(${email})님 환영합니다!`}
+        <>            
+            { !token && <Navigate to="/login" /> }
+            <p>{`${name}(${email})님 환영합니다!`}</p>
             <button onClick={handleLogout}>로그아웃</button>
+            <Outlet />
         </>
     );
 }

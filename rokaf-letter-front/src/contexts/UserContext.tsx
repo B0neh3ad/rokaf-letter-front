@@ -1,13 +1,10 @@
 import axios from "axios";
-import { ReactNode, createContext, useContext, useState } from "react";
-
-export type Headers = {
-    Authorization: string,
-};
+import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useEffect, useState } from "react";
 
 export type UserContextData = {
-    headers: Headers,
-    handleToken: (token: string | null) => void,
+    token: string | null,
+    setToken: Dispatch<SetStateAction<string | null>>,
+    getHeaders: (token: string | null) => object,
     
     name: string,
     email: string,
@@ -16,23 +13,26 @@ export type UserContextData = {
 export const UserContext = createContext<UserContextData | undefined>(undefined);
 
 export function UserProvider({ children }: { children: ReactNode }) {
-    const [headers, setHeaders] = useState<Headers>({Authorization:""});
+    const [token, setToken] = useState<string | null>(null);
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
 
-    const handleToken = (token: string | null) => {
+    const getHeaders = (tokenInput: string | null) => {
+        return { Authorization: `Token ${tokenInput}` };
+    };
+
+    useEffect(() => {
+        console.log(token);
+
         // token 제거하는 경우
-        if(token === null){
+        if (token === null) {
             setName("");
             setEmail("");
             return;
         }
         
         // token 설정하는 경우
-        console.log(token);
-        const newHeaders: Headers = {...headers, Authorization: `Token ${token}`};
-        setHeaders(newHeaders)
-        axios.get('http://127.0.0.1:8000/accounts/me/', {headers})
+        axios.get('http://127.0.0.1:8000/accounts/me/', {headers: getHeaders(token)})
         .then((res) => {
             if (res.status === 200) {
                 setName(res.data.name);
@@ -41,11 +41,12 @@ export function UserProvider({ children }: { children: ReactNode }) {
                 alert('먼가 잘못됨;;');
             }
         });
-    };
+    }, [token])
  
     const userContextData: UserContextData = {
-        headers,
-        handleToken,
+        token,
+        setToken,
+        getHeaders,
         name,
         email,
     };
