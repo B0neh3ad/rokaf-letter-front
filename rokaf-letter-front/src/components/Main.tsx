@@ -7,7 +7,7 @@ function Main() {
     const { token, setToken, removeToken, getHeaders, name, email } = useUserContext();
 
     const handleLogout = () => {
-        axios.get('http://127.0.0.1:8000/accounts/logout/', getHeaders(token))
+        axios.get('http://127.0.0.1:8000/accounts/logout/', getHeaders())
         .then((res) => {
             if(res.status === 204) {
                 removeToken();

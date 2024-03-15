@@ -5,7 +5,7 @@ export type UserContextData = {
     token: string | null,
     setToken: Dispatch<SetStateAction<string | null>>,
     removeToken: () => void,
-    getHeaders: (token: string | null) => object,
+    getHeaders: () => object,
     
     name: string,
     email: string,
@@ -18,12 +18,13 @@ export function UserProvider({ children }: { children: ReactNode }) {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
 
-    const getHeaders = (tokenInput: string | null) => {
+    const getHeaders = () => {
         return {
             headers:
+            token ?
             {
-                Authorization: `Token ${tokenInput}`
-            }
+                Authorization: `Token ${token}`
+            } : {}
         };
     };
 
@@ -43,7 +44,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
         }
         
         // token 설정하는 경우
-        axios.get('http://127.0.0.1:8000/accounts/me/', getHeaders(token))
+        axios.get('http://127.0.0.1:8000/accounts/me/', getHeaders())
         .then((res) => {
             if (res.status === 200) {
                 localStorage.setItem("token", token);
