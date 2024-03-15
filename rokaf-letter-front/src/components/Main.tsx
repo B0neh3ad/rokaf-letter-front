@@ -4,16 +4,24 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useEffect } from "react";
 
 function Main() {
-    const { token, setToken, getHeaders, name, email } = useUserContext();
+    const { token, setToken, removeToken, getHeaders, name, email } = useUserContext();
 
     const handleLogout = () => {
-        axios.get('http://127.0.0.1:8000/accounts/logout/', {headers: getHeaders(token)})
+        axios.get('http://127.0.0.1:8000/accounts/logout/', getHeaders(token))
         .then((res) => {
             if(res.status === 204) {
-                setToken(null);
+                removeToken();
             }
         })
     }
+
+    // load token from localStorage
+    useEffect(()=>{
+        const storagedToken = localStorage.getItem("token");
+        if (storagedToken !== null) {
+            setToken(storagedToken);
+        }
+    }, []);
 
     return (
         <>            

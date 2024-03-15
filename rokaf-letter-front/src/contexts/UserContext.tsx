@@ -4,6 +4,7 @@ import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useEffe
 export type UserContextData = {
     token: string | null,
     setToken: Dispatch<SetStateAction<string | null>>,
+    removeToken: () => void,
     getHeaders: (token: string | null) => object,
     
     name: string,
@@ -18,34 +19,48 @@ export function UserProvider({ children }: { children: ReactNode }) {
     const [email, setEmail] = useState("");
 
     const getHeaders = (tokenInput: string | null) => {
-        return { Authorization: `Token ${tokenInput}` };
+        return {
+            headers:
+            {
+                Authorization: `Token ${tokenInput}`
+            }
+        };
     };
 
-    useEffect(() => {
-        console.log(token);
+    const removeToken = () => {
+        setToken(null);
+        localStorage.removeItem("token");
+        setName("");
+        setEmail("");
+    }
 
-        // token 제거하는 경우
+    const handleSetToken = () => {
+        console.log('current token state:', token);
+        console.log('current storaged token:', localStorage.getItem("token"));
+
         if (token === null) {
-            setName("");
-            setEmail("");
             return;
         }
         
         // token 설정하는 경우
-        axios.get('http://127.0.0.1:8000/accounts/me/', {headers: getHeaders(token)})
+        axios.get('http://127.0.0.1:8000/accounts/me/', getHeaders(token))
         .then((res) => {
             if (res.status === 200) {
+                localStorage.setItem("token", token);
                 setName(res.data.name);
                 setEmail(res.data.email);
             } else {
-                alert('먼가 잘못됨;;');
+                // invalid token
+                removeToken();
             }
         });
-    }, [token])
+    }
+    useEffect(handleSetToken, [token])
  
     const userContextData: UserContextData = {
         token,
         setToken,
+        removeToken,
         getHeaders,
         name,
         email,
