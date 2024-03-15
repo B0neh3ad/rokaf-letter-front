@@ -6,7 +6,7 @@ import axios from "axios";
 // TODO: 주소 입력 구현하기
 
 function SignUp() {
-    const { token, getHeaders } = useUserContext();
+    const { token } = useUserContext();
 
     const [emailInput, setEmailInput] = useState("");
     const [passwordInput, setPasswordInput] = useState("");
