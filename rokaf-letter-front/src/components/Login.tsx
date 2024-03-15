@@ -7,7 +7,7 @@ function Login() {
     const [emailInput, setEmailInput] = useState("");
     const [passwordInput, setPasswordInput] = useState("");
 
-    const { token, setToken, getHeaders } = useUserContext();
+    const { token, setToken } = useUserContext();
 
     const handleSubmit: FormEventHandler = (e) => {
         e.preventDefault();
