@@ -51,6 +51,7 @@ function SignUp() {
                 switch (err.response.status) {
                     case 400:
                         var alertMessage = "";
+                        // TODO: resolve type issue
                         Object.entries(err.response.data).map(([field, errorMessages]) => {
                             alertMessage += `[${field}]\n${errorMessages.join('\n')}\n`;
                         })
