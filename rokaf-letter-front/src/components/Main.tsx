@@ -1,13 +1,13 @@
 import axios from "axios";
 import { useUserContext } from "../contexts/UserContext";
-import { Navigate, Outlet } from "react-router-dom";
+import { NavLink, Navigate, Outlet } from "react-router-dom";
 import { useEffect } from "react";
 
 function Main() {
     const { token, setToken, removeToken, getHeaders, name, email } = useUserContext();
 
     const handleLogout = () => {
-        axios.get('http://127.0.0.1:8000/accounts/logout/', getHeaders())
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/accounts/logout/`, getHeaders())
         .then((res) => {
             if(res.status === 204) {
                 removeToken();
@@ -25,9 +25,15 @@ function Main() {
 
     return (
         <>            
-            { !token && <Navigate to="/login" /> }
+            { !token ? <Navigate to="/login" /> : <Navigate to="/sent" /> } 
             <p>{`${name}(${email})님 환영합니다!`}</p>
             <button onClick={handleLogout}>로그아웃</button>
+            <nav>
+                <ul>
+                    <li><NavLink to="/sent">작성한 편지들</NavLink></li>
+                    <li><NavLink to="/trainees">훈련병 목록</NavLink></li>
+                </ul>
+            </nav>
             <Outlet />
         </>
     );
