@@ -3,6 +3,8 @@ import { useUserContext } from "../contexts/UserContext";
 import { FormEventHandler, useState } from "react";
 import axios from "axios";
 
+import styles from "../styles/SignUp.module.css";
+
 // TODO: 주소 입력 구현하기
 
 function SignUp() {
@@ -68,25 +70,29 @@ function SignUp() {
         <>
             {token && <Navigate to='/' />}
             {signUpSuccess && <Navigate to='/' />}
-            <form onSubmit={handleSubmit}>
-                <label htmlFor="email">이메일 </label>
-                <input type="email" name="email" value={emailInput} onChange={(e) => setEmailInput(e.target.value)} />
-                <br />
+            <section className={styles.signUp}>
+                <h1>회원가입</h1>
 
-                <label htmlFor="password">비밀번호 </label>
-                <input type="password" name="password" value={passwordInput} onChange={(e) => setPasswordInput(e.target.value)} />
-                <br />
+                <form onSubmit={handleSubmit}>
+                    <label htmlFor="email">이메일 </label>
+                    <input type="email" name="email" value={emailInput} onChange={(e) => setEmailInput(e.target.value)} />
+                    <br />
 
-                <label htmlFor="password2">비밀번호 재입력 </label>
-                <input type="password" name="password2" value={password2Input} onChange={(e) => setPassword2Input(e.target.value)} />
-                <br />
+                    <label htmlFor="password">비밀번호 </label>
+                    <input type="password" name="password" value={passwordInput} onChange={(e) => setPasswordInput(e.target.value)} />
+                    <br />
 
-                <label htmlFor="name">이름 </label>
-                <input type="text" name="name" value={nameInput} onChange={(e) => setNameInput(e.target.value)} />
-                <br />
+                    <label htmlFor="password2">비밀번호 재입력 </label>
+                    <input type="password" name="password2" value={password2Input} onChange={(e) => setPassword2Input(e.target.value)} />
+                    <br />
 
-                <button type="submit">회원가입</button>
-            </form>
+                    <label htmlFor="name">이름 </label>
+                    <input type="text" name="name" value={nameInput} onChange={(e) => setNameInput(e.target.value)} />
+                    <br />
+
+                    <button type="submit">회원가입</button>
+                </form>
+            </section>
         </>
     );
 }
